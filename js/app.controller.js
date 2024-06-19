@@ -71,8 +71,7 @@ function renderLocs(locs) {
 }
 
 function onRemoveLoc(locId) {//TODO: add confirmation (use confirm)
-    //added:
-    if(!confirm('Are you sure???')) return
+    if (!confirm('Are you sure???')) return
 
     locService.remove(locId)
         .then(() => {
@@ -99,25 +98,13 @@ function onSearchAddress(ev) {
         })
 }
 
-function onAddLoc(geo) {//TODO: change from prompt to <dialog> modal
-    const locName = prompt('Loc name', geo.address || 'Just a place')
-    if (!locName) return
 
-    const loc = {
-        name: locName,
-        rate: +prompt(`Rate (1-5)`, '3'),
-        geo
-    }
-    locService.save(loc)
-        .then((savedLoc) => {
-            flashMsg(`Added Location (id: ${savedLoc.id})`)
-            utilService.updateQueryParams({ locId: savedLoc.id })
-            loadAndRenderLocs()
-        })
-        .catch(err => {
-            console.error('OOPs:', err)
-            flashMsg('Cannot add location')
-        })
+// MODIFIED
+function onAddLoc(geo) {//TODO: change from prompt to <dialog> modal
+    const elDialog = document.querySelector('.dialog-container')
+    const elForm = elDialog.querySelector('.dialog-form')
+    elForm.dataset.geo = JSON.stringify(geo)
+    elDialog.show()
 }
 
 function loadAndRenderLocs() {
@@ -228,7 +215,7 @@ function getFilterByFromQueryParams() {
     const queryParams = new URLSearchParams(window.location.search)
     const txt = queryParams.get('txt') || ''
     const minRate = queryParams.get('minRate') || 0
-    locService.setFilterBy({txt, minRate})
+    locService.setFilterBy({ txt, minRate })
 
     document.querySelector('input[name="filter-by-txt"]').value = txt
     document.querySelector('input[name="filter-by-rate"]').value = minRate
@@ -321,15 +308,30 @@ function cleanStats(stats) {
 }
 
 //ADDED:
-function onDialogSubmit(el) {
-    const elDialog = document.querySelector(".dialog-container")
-    const elForm = document.querySelector(".dialog-form")
-    const elRating = document.querySelector(".dialog-form .rating")
-    const elName = document.querySelector(".dialog-form .Name")
-    console.log('el:',el)
-    console.log('elDialog:',elDialog)
-    console.log('elForm:',elForm)
-    console.log('rating:',elRating)
-    console.log('name:',elName)
-    
+// MODIFIED
+function onDialogSubmit(ev, elForm) {
+
+    const name = ev.target.elements['name'].value
+    if (!name) return
+
+
+    const rate = ev.target.elements['rating'].value
+    if (rate < 1 || rate > 5) return
+
+    const loc = {
+        name,
+        rate,
+        geo: JSON.parse(elForm.dataset.geo)
+    }
+
+    locService.save(loc)
+        .then((savedLoc) => {
+            flashMsg(`Added Location (id: ${savedLoc.id})`)
+            utilService.updateQueryParams({ locId: savedLoc.id })
+            loadAndRenderLocs()
+        })
+        .catch(err => {
+            console.error('OOPs:', err)
+            flashMsg('Cannot add location')
+        })
 }

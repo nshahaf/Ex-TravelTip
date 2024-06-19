@@ -70,10 +70,10 @@
     <pre class="debug" hidden></pre>
     <div class="user-msg"></div>
 
-    <dialog open class="dialog-container" >
-        <form class="dialog-form" method="dialog" onsubmit="app.onDialogSubmit(this)">
-            <input type="text" class="name" placeholder="Enter location name:">
-            <input type="text" class="rating" placeholder="Enter rating(1-5):">
+    <dialog class="dialog-container" >
+        <form class="dialog-form" method="dialog" onsubmit="app.onDialogSubmit(event, this)">
+            <input type="text" class="name" placeholder="Enter location" name="name">
+            <input type="number" class="rating" placeholder="Enter rating(1-5):" name="rating">
             <button type="submit">Submit</button>
         </form>
     </dialog>
