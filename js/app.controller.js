@@ -16,7 +16,9 @@ window.app = {
     onShareLoc,
     onSetSortBy,
     onSetFilterBy,
+    onDialogSubmit,//Added
 }
+
 
 function onInit() {
     getFilterByFromQueryParams()
@@ -316,4 +318,18 @@ function cleanStats(stats) {
         return acc
     }, [])
     return cleanedStats
+}
+
+//ADDED:
+function onDialogSubmit(el) {
+    const elDialog = document.querySelector(".dialog-container")
+    const elForm = document.querySelector(".dialog-form")
+    const elRating = document.querySelector(".dialog-form .rating")
+    const elName = document.querySelector(".dialog-form .Name")
+    console.log('el:',el)
+    console.log('elDialog:',elDialog)
+    console.log('elForm:',elForm)
+    console.log('rating:',elRating)
+    console.log('name:',elName)
+    
 }
