@@ -30,7 +30,9 @@ export const locService = {
     save,
     setFilterBy,
     setSortBy,
-    getLocCountByRateMap
+    getLocCountByRateMap,
+    getLocCountByDayMap
+    
 }
 
 function query() {
@@ -96,6 +98,36 @@ function getLocCountByRateMap() {//pieChart (by rate)
             locCountByRateMap.total = locs.length
             return locCountByRateMap
         })
+}
+
+function getLocCountByDayMap() {//pieChart (by Days)
+    return storageService.query(DB_KEY)
+        .then(locs => {  //updated time stamp is in loc.updatedAt
+
+            const locCountByDayMap = locs.reduce((map, loc) => {
+                //get date from updated timestamp
+                if (_isTimeStampToday(loc.updatedAt) === 'today') map.today++ //if for updated todaytoday
+                else if (_isTimeStampToday(loc.updatedAt) === 'past') map.past++ // if for updated in the past (not today)
+                else map.never++ // never updated
+                return map
+            }, { today: 0, past: 0, never: 0 })
+            locCountByDayMap.total = locs.length
+            console.log('locCountByDayMap:',locCountByDayMap)
+            return locCountByDayMap
+        })
+}
+
+function _isTimeStampToday(timestamp) {
+    const updatedDate = new Date (timestamp)
+    const startOfToday = new Date()
+    startOfToday.setHours(0,0,0,0)
+
+    const endOfToday = new Date()
+    endOfToday.setHours(23,59,59,999)
+
+    if (updatedDate >= startOfToday && updatedDate <= endOfToday) return 'today'
+    else if (updatedDate < startOfToday) return 'past'
+    else return null
 }
 
 function setSortBy(sortBy = {}) {

@@ -254,6 +254,10 @@ function renderLocStats() {//Render pie chart grouped by rate
     })
 }
 
+function logStats() {
+    locService.getLocCountByDayMap()
+}
+
 function handleStats(stats, selector) {
     // stats = { low: 37, medium: 11, high: 100, total: 148 }
     // stats = { low: 5, medium: 5, high: 5, baba: 55, mama: 30, total: 100 }
