@@ -19,9 +19,6 @@ window.app = {
     onDialogSubmit,//Added
 }
 
-
-
-
 function onInit() {
     getFilterByFromQueryParams()
     loadAndRenderLocs()
@@ -64,6 +61,7 @@ function renderLocs(locs) {
     elLocList.innerHTML = strHTML || 'No locs to show'
 
     renderLocStats()
+    renderLocStatsByLastUpdated()
 
     if (selectedLocId) {
         const selectedLoc = locs.find(loc => loc.id === selectedLocId)
@@ -254,8 +252,10 @@ function renderLocStats() {//Render pie chart grouped by rate
     })
 }
 
-function logStats() {
-    locService.getLocCountByDayMap()
+function renderLocStatsByLastUpdated(){
+    locService.getLocCountByDayMap().then(stats => {
+        handleStats(stats, 'loc-stats-last-updated')
+    })
 }
 
 function handleStats(stats, selector) {
